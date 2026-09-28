@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FAU Owls Blackjack</title>
+    <meta name="description" content="Play Blackjack against the dealer in Florida Atlantic University colors. Cards dealt by the Deck of Cards API." />
+    <meta name="theme-color" content="#003366" />
+    <link rel="icon" type="image/svg+xml" href="assets/fau-logo.svg" />
+    <link rel="preconnect" href="https://deckofcardsapi.com" crossorigin />
+    <link rel="stylesheet" href="css/styles.css" />
+    <script type="module" src="js/app.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="brand">
+        <img class="brand-logo" src="assets/fau-logo.svg" alt="FAU logo" width="56" height="56" />
+        <div>
+          <p class="brand-kicker">Florida Atlantic University</p>
+          <h1>Owls Blackjack</h1>
+        </div>
+      </div>
+      <section class="scoreboard" aria-label="Scoreboard">
+        <div class="score score-player">
+          <span class="score-label">You</span>
+          <span class="score-value" id="player-wins">0</span>
+        </div>
+        <div class="score score-push">
+          <span class="score-label">Pushes</span>
+          <span class="score-value" id="pushes">0</span>
+        </div>
+        <div class="score score-dealer">
+          <span class="score-label">Dealer</span>
+          <span class="score-value" id="dealer-wins">0</span>
+        </div>
+      </section>
+    </header>
+
+    <main class="table">
+      <section class="hand" aria-labelledby="dealer-heading">
+        <div class="hand-header">
+          <h2 id="dealer-heading">Dealer</h2>
+          <span class="hand-total" id="dealer-total" aria-label="Dealer total">–</span>
+        </div>
+        <div class="cards" id="dealer-cards"></div>
+      </section>
+
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+
+      <section class="hand" aria-labelledby="player-heading">
+        <div class="hand-header">
+          <h2 id="player-heading">You</h2>
+          <span class="hand-total" id="player-total" aria-label="Your total">–</span>
+        </div>
+        <div class="cards" id="player-cards"></div>
+      </section>
+
+      <div class="controls">
+        <button type="button" class="btn btn-secondary" id="hit-btn" disabled>Hit <kbd>H</kbd></button>
+        <button type="button" class="btn btn-secondary" id="stand-btn" disabled>Stand <kbd>S</kbd></button>
+        <button type="button" class="btn btn-primary" id="deal-btn">Deal <kbd>D</kbd></button>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <p id="shoe-count"></p>
+      <button type="button" class="link-btn" id="reset-score-btn">Reset score</button>
+      <p class="credit">
+        Cards dealt by the <a href="https://deckofcardsapi.com" target="_blank" rel="noopener">Deck of Cards API</a>.
+        Built for ISM 4421. Go Owls!
+      </p>
+    </footer>
+  </body>
+</html>
