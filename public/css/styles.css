@@ -354,3 +354,119 @@ kbd {
     transition: none;
   }
 }
+
+/* ---------- Sign-in ---------- */
+
+/* body[data-auth] is set by js/auth.js: loading | signed-out | signed-in */
+body:not([data-auth="signed-in"]) .signed-in-only,
+body:not([data-auth="signed-out"]) .signed-out-only,
+body:not([data-auth="loading"]) .loading-only {
+  display: none !important;
+}
+
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.user-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--fau-gray);
+}
+
+.user-email {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.auth-loading {
+  flex: 1;
+  margin: 48px 0;
+  text-align: center;
+  color: var(--fau-gray);
+}
+
+.auth-card {
+  width: min(420px, 100% - 32px);
+  margin: 48px auto auto;
+  padding: 28px;
+  background: var(--felt);
+  border: 6px solid var(--fau-red);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+}
+
+.auth-card h2 {
+  margin-bottom: 18px;
+  font-size: 1.3rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--white);
+  text-align: center;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-card label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--fau-gray);
+}
+
+.auth-card input {
+  margin-bottom: 8px;
+  padding: 11px 14px;
+  font: inherit;
+  color: var(--fau-blue-dark);
+  background: var(--white);
+  border: 2px solid transparent;
+  border-radius: 10px;
+}
+
+.auth-card input:focus-visible {
+  outline: none;
+  border-color: var(--fau-red);
+}
+
+.auth-card .btn {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.auth-message {
+  min-height: 1.2em;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.auth-message[data-tone="error"] {
+  color: #ffb3b3;
+}
+
+.auth-message[data-tone="info"] {
+  color: var(--white);
+}
+
+.auth-switch {
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--fau-gray);
+}
+
+@media (max-width: 560px) {
+  .header-right {
+    align-items: center;
+  }
+}

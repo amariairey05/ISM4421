@@ -10,6 +10,7 @@ A Blackjack game in Florida Atlantic University colors. Cards come from the free
 - Scoreboard of your wins vs. the dealer's wins, plus pushes, saved in the browser
 - 6-deck shoe that reshuffles automatically when it runs low
 - Standard rules: dealer stands on all 17s, natural Blackjack wins immediately
+- Email + password login (Supabase Auth); each player has their own scoreboard
 - FAU Blue `#003366`, FAU Red `#CC0000`, and FAU Gray; works on phones
 
 ## Project layout
@@ -19,9 +20,12 @@ public/            <- everything Netlify serves
   index.html
   css/styles.css
   js/app.js        UI and game flow
+  js/auth.js       sign in / create account / sign out (Supabase Auth)
+  js/config.js     Supabase project URL and publishable key
   js/blackjack.js  pure Blackjack rules (unit-tested)
   js/deckApi.js    Deck of Cards API client
   assets/fau-logo.svg
+  vendor/          supabase-js browser bundle (MIT license)
 tests/             unit tests for the rules
 netlify.toml       Netlify config (publish dir + security headers)
 ```
@@ -41,6 +45,23 @@ Run the unit tests (Node 18+):
 ```sh
 npm test
 ```
+
+## Login (Supabase)
+
+Players sign in with an email and password before the table appears. Accounts
+are stored by Supabase Auth in project `aiitajwhzjcjlckgazhq`; no database
+tables are needed. The publishable key in `js/config.js` is meant to be public.
+
+**One required setting:** Supabase's built-in email sender only delivers to
+members of your Supabase team, so other players would never get a
+confirmation email. Turn confirmation off:
+
+1. Open <https://supabase.com/dashboard/project/aiitajwhzjcjlckgazhq/auth/providers>
+2. Click **Email**, switch **Confirm email** off, and **Save**.
+
+To keep email confirmation instead, set up custom SMTP (Authentication →
+Emails → SMTP Settings) and set **Site URL** to your Netlify address under
+Authentication → URL Configuration.
 
 ## Deploy to Netlify
 
