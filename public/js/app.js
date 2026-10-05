@@ -9,7 +9,7 @@ import {
 } from "./blackjack.js";
 import { Deck, CARD_BACK_IMAGE } from "./deckApi.js";
 
-const STATS_KEY = "fau-blackjack-stats";
+const STATS_KEY_PREFIX = "fau-blackjack-stats";
 const DEALER_DELAY_MS = 650;
 // A round rarely needs more than ~12 cards; reshuffle before we get close.
 const RESHUFFLE_THRESHOLD = 30;
@@ -40,15 +40,23 @@ const state = {
   player: [],
   dealer: [],
   holeHidden: true,
-  stats: loadStats(),
+  userId: null,
+  // Bumped when the signed-in user changes so in-flight hands are dropped.
+  table: 0,
+  stats: { wins: 0, losses: 0, pushes: 0 },
 };
 
 // ---------- Persistence ----------
 
+// Each signed-in user keeps their own scoreboard on this device.
+function statsKey() {
+  return `${STATS_KEY_PREFIX}:${state.userId}`;
+}
+
 function loadStats() {
   const empty = { wins: 0, losses: 0, pushes: 0 };
   try {
-    const saved = JSON.parse(localStorage.getItem(STATS_KEY));
+    const saved = JSON.parse(localStorage.getItem(statsKey()));
     if (saved && typeof saved === "object") return { ...empty, ...saved };
   } catch {
     // Storage unavailable (private mode, blocked cookies) — start fresh.
@@ -58,7 +66,7 @@ function loadStats() {
 
 function saveStats() {
   try {
-    localStorage.setItem(STATS_KEY, JSON.stringify(state.stats));
+    localStorage.setItem(statsKey(), JSON.stringify(state.stats));
   } catch {
     // Non-fatal: the scoreboard simply won't survive a reload.
   }
@@ -187,7 +195,8 @@ function handleError(error, fallbackPhase) {
 }
 
 async function deal() {
-  if (state.phase === "busy" || state.phase === "player") return;
+  if (!state.userId || state.phase === "busy" || state.phase === "player") return;
+  const table = state.table;
   const previousPhase = state.phase;
   state.phase = "busy";
   setStatus("Shuffling up and dealing…");
@@ -196,10 +205,12 @@ async function deal() {
   try {
     await deck.ensureCards(RESHUFFLE_THRESHOLD);
     const [p1, d1, p2, d2] = await deck.draw(4);
+    if (table !== state.table) return;
     state.player = [p1, p2];
     state.dealer = [d1, d2];
     state.holeHidden = true;
   } catch (error) {
+    if (table !== state.table) return;
     handleError(error, previousPhase);
     return;
   }
@@ -215,12 +226,15 @@ async function deal() {
 
 async function hit() {
   if (state.phase !== "player") return;
+  const table = state.table;
   state.phase = "busy";
   render();
   try {
     const [card] = await deck.draw(1);
+    if (table !== state.table) return;
     state.player.push(card);
   } catch (error) {
+    if (table !== state.table) return;
     handleError(error, "player");
     return;
   }
@@ -239,6 +253,7 @@ async function hit() {
 }
 
 async function dealerTurn() {
+  const table = state.table;
   state.phase = "busy";
   state.holeHidden = false;
   setStatus("Dealer's turn…");
@@ -248,16 +263,19 @@ async function dealerTurn() {
     while (dealerShouldHit(state.dealer)) {
       await sleep(DEALER_DELAY_MS);
       const [card] = await deck.draw(1);
+      if (table !== state.table) return;
       state.dealer.push(card);
       render();
     }
   } catch (error) {
+    if (table !== state.table) return;
     // The hand can't be completed reliably; void it rather than score it.
     state.holeHidden = false;
     handleError(error, "over");
     return;
   }
   await sleep(DEALER_DELAY_MS / 2);
+  if (table !== state.table) return;
   finishRound();
 }
 
@@ -281,9 +299,12 @@ el.resetScore.addEventListener("click", resetScore);
 
 document.addEventListener("keydown", (event) => {
   if (event.ctrlKey || event.metaKey || event.altKey) return;
-  if (event.target instanceof HTMLElement && event.target.closest("button, input, textarea")) {
+  if (!state.userId) return;
+  if (event.target instanceof HTMLElement) {
+    // Don't steal keystrokes from form fields.
+    if (event.target.closest("input, textarea")) return;
     // Let Enter/Space activate the focused button normally.
-    if (event.key === "Enter" || event.key === " ") return;
+    if (event.target.closest("button") && (event.key === "Enter" || event.key === " ")) return;
   }
   const key = event.key.toLowerCase();
   if (key === "h") hit();
@@ -291,5 +312,22 @@ document.addEventListener("keydown", (event) => {
   else if (key === "d" || key === "n") deal();
 });
 
-setStatus("Press Deal to start a hand. Dealer stands on all 17s. Blackjack beats 21.");
+const WELCOME = "Press Deal to start a hand. Dealer stands on all 17s. Blackjack beats 21.";
+
+// auth.js announces sign-in / sign-out; start a fresh table for each user.
+document.addEventListener("auth-change", (event) => {
+  const userId = event.detail.user?.id ?? null;
+  if (userId === state.userId) return;
+  state.userId = userId;
+  state.table += 1;
+  state.stats = userId ? loadStats() : { wins: 0, losses: 0, pushes: 0 };
+  state.player = [];
+  state.dealer = [];
+  state.holeHidden = true;
+  state.phase = "idle";
+  setStatus(WELCOME);
+  render();
+});
+
+setStatus(WELCOME);
 render();

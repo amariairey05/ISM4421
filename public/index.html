@@ -9,9 +9,11 @@
     <link rel="icon" type="image/svg+xml" href="assets/fau-logo.svg" />
     <link rel="preconnect" href="https://deckofcardsapi.com" crossorigin />
     <link rel="stylesheet" href="css/styles.css" />
+    <script src="vendor/supabase-2.117.2.js"></script>
     <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/auth.js"></script>
   </head>
-  <body>
+  <body data-auth="loading">
     <header class="site-header">
       <div class="brand">
         <img class="brand-logo" src="assets/fau-logo.svg" alt="FAU logo" width="56" height="56" />
@@ -20,23 +22,47 @@
           <h1>Owls Blackjack</h1>
         </div>
       </div>
-      <section class="scoreboard" aria-label="Scoreboard">
-        <div class="score score-player">
-          <span class="score-label">You</span>
-          <span class="score-value" id="player-wins">0</span>
+      <div class="header-right signed-in-only">
+        <section class="scoreboard" aria-label="Scoreboard">
+          <div class="score score-player">
+            <span class="score-label">You</span>
+            <span class="score-value" id="player-wins">0</span>
+          </div>
+          <div class="score score-push">
+            <span class="score-label">Pushes</span>
+            <span class="score-value" id="pushes">0</span>
+          </div>
+          <div class="score score-dealer">
+            <span class="score-label">Dealer</span>
+            <span class="score-value" id="dealer-wins">0</span>
+          </div>
+        </section>
+        <div class="user-bar">
+          <span class="user-email" id="user-email"></span>
+          <button type="button" class="link-btn" id="sign-out-btn">Sign out</button>
         </div>
-        <div class="score score-push">
-          <span class="score-label">Pushes</span>
-          <span class="score-value" id="pushes">0</span>
-        </div>
-        <div class="score score-dealer">
-          <span class="score-label">Dealer</span>
-          <span class="score-value" id="dealer-wins">0</span>
-        </div>
-      </section>
+      </div>
     </header>
 
-    <main class="table">
+    <main class="auth-card signed-out-only" aria-labelledby="auth-title">
+      <h2 id="auth-title">Sign in to play</h2>
+      <form id="auth-form">
+        <label for="auth-email">Email</label>
+        <input id="auth-email" name="email" type="email" autocomplete="email" required />
+        <label for="auth-password">Password</label>
+        <input id="auth-password" name="password" type="password" autocomplete="current-password" minlength="6" required />
+        <p class="auth-message" id="auth-message" role="alert" aria-live="polite"></p>
+        <button type="submit" class="btn btn-primary" id="auth-submit">Sign in</button>
+      </form>
+      <p class="auth-switch">
+        <span id="auth-toggle-prompt">New here?</span>
+        <button type="button" class="link-btn" id="auth-toggle">Create an account</button>
+      </p>
+    </main>
+
+    <p class="auth-loading loading-only" role="status">Loading…</p>
+
+    <main class="table signed-in-only">
       <section class="hand" aria-labelledby="dealer-heading">
         <div class="hand-header">
           <h2 id="dealer-heading">Dealer</h2>
@@ -63,8 +89,8 @@
     </main>
 
     <footer class="site-footer">
-      <p id="shoe-count"></p>
-      <button type="button" class="link-btn" id="reset-score-btn">Reset score</button>
+      <p id="shoe-count" class="signed-in-only"></p>
+      <button type="button" class="link-btn signed-in-only" id="reset-score-btn">Reset score</button>
       <p class="credit">
         Cards dealt by the <a href="https://deckofcardsapi.com" target="_blank" rel="noopener">Deck of Cards API</a>.
         Built for ISM 4421. Go Owls!
