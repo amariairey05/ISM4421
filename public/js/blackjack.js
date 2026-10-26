@@ -92,3 +92,22 @@ export const OUTCOME_MESSAGES = Object.freeze({
   [OUTCOMES.DEALER_WIN]: "Dealer wins.",
   [OUTCOMES.PUSH]: "Push — it's a tie.",
 });
+
+/**
+ * Chips returned to the player for a finished hand, including the original
+ * bet. Blackjack pays 3:2 (rounded down), other wins pay 1:1, a push returns
+ * the bet, and losses return nothing.
+ */
+export function payout(outcome, bet) {
+  switch (outcome) {
+    case OUTCOMES.PLAYER_BLACKJACK:
+      return bet + Math.floor(bet * 1.5);
+    case OUTCOMES.DEALER_BUST:
+    case OUTCOMES.PLAYER_WIN:
+      return bet * 2;
+    case OUTCOMES.PUSH:
+      return bet;
+    default:
+      return 0;
+  }
+}

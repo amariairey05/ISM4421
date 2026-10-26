@@ -3,8 +3,6 @@
 
 const API_BASE = "https://deckofcardsapi.com/api/deck";
 
-export const CARD_BACK_IMAGE = "https://deckofcardsapi.com/static/img/back.png";
-
 async function request(path) {
   const response = await fetch(`${API_BASE}/${path}`);
   if (!response.ok) {

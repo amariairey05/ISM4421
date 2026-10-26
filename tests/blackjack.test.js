@@ -7,6 +7,7 @@ import {
   dealerShouldHit,
   determineOutcome,
   outcomeResult,
+  payout,
   OUTCOMES,
 } from "../public/js/blackjack.js";
 
@@ -54,4 +55,14 @@ test("scoreboard mapping", () => {
   assert.equal(outcomeResult(OUTCOMES.DEALER_BUST), "win");
   assert.equal(outcomeResult(OUTCOMES.PLAYER_BUST), "loss");
   assert.equal(outcomeResult(OUTCOMES.PUSH), "push");
+});
+
+test("payouts include the original bet", () => {
+  assert.equal(payout(OUTCOMES.PLAYER_BLACKJACK, 100), 250);
+  assert.equal(payout(OUTCOMES.PLAYER_BLACKJACK, 5), 12);
+  assert.equal(payout(OUTCOMES.PLAYER_WIN, 100), 200);
+  assert.equal(payout(OUTCOMES.DEALER_BUST, 25), 50);
+  assert.equal(payout(OUTCOMES.PUSH, 25), 25);
+  assert.equal(payout(OUTCOMES.PLAYER_BUST, 25), 0);
+  assert.equal(payout(OUTCOMES.DEALER_BLACKJACK, 25), 0);
 });

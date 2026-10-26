@@ -14,7 +14,7 @@ const el = {
   toggle: document.getElementById("auth-toggle"),
   togglePrompt: document.getElementById("auth-toggle-prompt"),
   message: document.getElementById("auth-message"),
-  userEmail: document.getElementById("user-email"),
+  avatar: document.getElementById("avatar"),
   signOut: document.getElementById("sign-out-btn"),
 };
 
@@ -24,8 +24,8 @@ function setMode(next) {
   mode = next;
   const signUp = mode === "sign-up";
   el.title.textContent = signUp ? "Create your account" : "Sign in to play";
-  el.submit.textContent = signUp ? "Create account" : "Sign in";
-  el.togglePrompt.textContent = signUp ? "Already have an account?" : "New here?";
+  el.submit.textContent = signUp ? "CREATE ACCOUNT" : "SIGN IN";
+  el.togglePrompt.textContent = signUp ? "Have an account?" : "New here?";
   el.toggle.textContent = signUp ? "Sign in" : "Create an account";
   el.password.autocomplete = signUp ? "new-password" : "current-password";
   showMessage("");
@@ -39,7 +39,8 @@ function showMessage(text, tone = "error") {
 function applySession(session) {
   const user = session?.user ?? null;
   document.body.dataset.auth = user ? "signed-in" : "signed-out";
-  el.userEmail.textContent = user?.email ?? "";
+  el.avatar.textContent = (user?.email?.[0] ?? "A").toUpperCase();
+  el.avatar.title = user?.email ?? "";
   document.dispatchEvent(new CustomEvent("auth-change", { detail: { user } }));
 }
 
@@ -81,7 +82,9 @@ function friendlyError(error) {
   if (/invalid login credentials/i.test(msg)) return "Wrong email or password.";
   if (/email not confirmed/i.test(msg)) return "Please confirm your email first (check your inbox).";
   if (/already registered/i.test(msg)) return "That email already has an account. Try signing in.";
-  if (/failed to fetch|network/i.test(msg)) return "Can't reach the login server. Check your connection.";
+  if (/failed to fetch|network|load failed/i.test(msg)) {
+    return "Can't reach the login server right now. Please try again in a minute.";
+  }
   return msg;
 }
 

@@ -3,10 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#06152B" />
     <title>FAU Owls Blackjack</title>
     <meta name="description" content="Play Blackjack against the dealer in Florida Atlantic University colors. Cards dealt by the Deck of Cards API." />
-    <meta name="theme-color" content="#003366" />
-    <link rel="icon" type="image/svg+xml" href="assets/fau-logo.svg" />
+    <link rel="icon" type="image/png" href="assets/owl.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Inter:wght@400;500;600;700&display=swap" />
     <link rel="preconnect" href="https://deckofcardsapi.com" crossorigin />
     <link rel="stylesheet" href="css/styles.css" />
     <script src="vendor/supabase-2.117.2.js"></script>
@@ -14,87 +17,157 @@
     <script type="module" src="js/auth.js"></script>
   </head>
   <body data-auth="loading">
-    <header class="site-header">
-      <div class="brand">
-        <img class="brand-logo" src="assets/fau-logo.svg" alt="FAU logo" width="56" height="56" />
-        <div>
-          <p class="brand-kicker">Florida Atlantic University</p>
-          <h1>Owls Blackjack</h1>
-        </div>
+    <!-- ================= LANDING / SIGN IN ================= -->
+    <section id="landing">
+      <div class="bg-suits" aria-hidden="true">
+        <span class="s1">♠</span>
+        <span class="s2">♥</span>
+        <span class="s3">♣</span>
       </div>
-      <div class="header-right signed-in-only">
-        <section class="scoreboard" aria-label="Scoreboard">
-          <div class="score score-player">
-            <span class="score-label">You</span>
-            <span class="score-value" id="player-wins">0</span>
+      <div class="wrap">
+        <nav class="top">
+          <a class="brand" href="#" aria-label="FAU Owls Blackjack home">
+            <img src="assets/owl.png" alt="FAU Owls logo" width="67" height="38" />
+            <span><b>OWLS</b><small>BLACKJACK</small></span>
+          </a>
+          <div class="links">
+            <a href="#signin">Play</a>
+            <a href="#rules">How to play</a>
+            <a href="#signin" class="pill-red">Sign in</a>
           </div>
-          <div class="score score-push">
-            <span class="score-label">Pushes</span>
-            <span class="score-value" id="pushes">0</span>
+        </nav>
+
+        <div class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow"><span>♠</span><span class="r">♥</span><span>FLORIDA ATLANTIC UNIVERSITY</span><span class="r">♦</span><span>♣</span></div>
+            <h1 class="big">Beat the dealer.<br /><span class="r">Go Owls.</span></h1>
+            <p class="lede">Blackjack in blue, red and silver. Real shuffled decks, a chip stack to grow, and a dealer who stands on all 17s.</p>
+            <div class="fan" id="fan" aria-hidden="true"></div>
           </div>
-          <div class="score score-dealer">
-            <span class="score-label">Dealer</span>
-            <span class="score-value" id="dealer-wins">0</span>
+
+          <div id="signin">
+            <div class="signin">
+              <div class="corner" aria-hidden="true"><span>A</span><span>♠</span></div>
+              <div class="corner br" aria-hidden="true"><span>A</span><span>♠</span></div>
+              <div class="inner">
+                <img class="signin-owl" src="assets/owl.png" alt="FAU Owls" width="150" height="86" />
+                <div>
+                  <h2 id="auth-title">Sign in to play</h2>
+                  <p>Your chips are waiting at the table.</p>
+                </div>
+                <form id="auth-form">
+                  <label>Email<input id="auth-email" type="email" placeholder="you@fau.edu" required autocomplete="email" /></label>
+                  <label>Password<input id="auth-password" type="password" placeholder="••••••••" required minlength="6" autocomplete="current-password" /></label>
+                  <p class="auth-message" id="auth-message" role="alert" aria-live="polite"></p>
+                  <button type="submit" class="btn-red" id="auth-submit">SIGN IN</button>
+                </form>
+                <p><span id="auth-toggle-prompt">New here?</span> <button type="button" class="link" id="auth-toggle">Create an account</button></p>
+              </div>
+            </div>
           </div>
-        </section>
-        <div class="user-bar">
-          <span class="user-email" id="user-email"></span>
-          <button type="button" class="link-btn" id="sign-out-btn">Sign out</button>
         </div>
+
+        <div class="rules" id="rules">
+          <div class="rule"><div class="mini" aria-hidden="true">♠</div><h3>Dealer stands on all 17s</h3><p>Classic table rules. Blackjack beats 21 and pays 3:2.</p></div>
+          <div class="rule"><div class="mini red" aria-hidden="true">♥</div><h3>Chips to grow</h3><p>Start with 1,000 chips. Bet with 5, 25, 100 and 500 chips.</p></div>
+          <div class="rule"><div class="mini red" aria-hidden="true">♦</div><h3>Keyboard friendly</h3><p>H to hit, S to stand, D to double, Enter to deal.</p></div>
+        </div>
+
+        <footer class="credit">
+          Cards dealt by the <a href="https://deckofcardsapi.com" target="_blank" rel="noopener">Deck of Cards API</a>. Built for ISM 4421.
+        </footer>
       </div>
-    </header>
+    </section>
 
-    <main class="auth-card signed-out-only" aria-labelledby="auth-title">
-      <h2 id="auth-title">Sign in to play</h2>
-      <form id="auth-form">
-        <label for="auth-email">Email</label>
-        <input id="auth-email" name="email" type="email" autocomplete="email" required />
-        <label for="auth-password">Password</label>
-        <input id="auth-password" name="password" type="password" autocomplete="current-password" minlength="6" required />
-        <p class="auth-message" id="auth-message" role="alert" aria-live="polite"></p>
-        <button type="submit" class="btn btn-primary" id="auth-submit">Sign in</button>
-      </form>
-      <p class="auth-switch">
-        <span id="auth-toggle-prompt">New here?</span>
-        <button type="button" class="link-btn" id="auth-toggle">Create an account</button>
-      </p>
-    </main>
-
-    <p class="auth-loading loading-only" role="status">Loading…</p>
-
-    <main class="table signed-in-only">
-      <section class="hand" aria-labelledby="dealer-heading">
-        <div class="hand-header">
-          <h2 id="dealer-heading">Dealer</h2>
-          <span class="hand-total" id="dealer-total" aria-label="Dealer total">–</span>
+    <!-- ================= GAME TABLE ================= -->
+    <section id="game">
+      <header class="bar">
+        <div class="wrap">
+          <span class="brand">
+            <img src="assets/owl.png" alt="FAU Owls logo" width="60" height="34" />
+            <span><b>OWLS</b><small>BLACKJACK</small></span>
+          </span>
+          <div class="bar-right">
+            <div class="bank-pill"><span class="dot" aria-hidden="true"></span><small>CHIPS</small><b id="bank-top">1,000</b></div>
+            <span class="avatar" id="avatar" aria-hidden="true">A</span>
+            <button class="ghost" id="sign-out-btn" type="button">Sign out</button>
+          </div>
         </div>
-        <div class="cards" id="dealer-cards"></div>
-      </section>
+      </header>
 
-      <p class="status" id="status" role="status" aria-live="polite"></p>
+      <main class="wrap game">
+        <div class="col-main">
+          <div class="table" id="table">
+            <img class="watermark" src="assets/owl.png" alt="" aria-hidden="true" />
+            <div class="shoe" aria-hidden="true"><div class="stack"><i></i><i></i><i></i></div><div id="shoe-count">6-deck shoe</div></div>
 
-      <section class="hand" aria-labelledby="player-heading">
-        <div class="hand-header">
-          <h2 id="player-heading">You</h2>
-          <span class="hand-total" id="player-total" aria-label="Your total">–</span>
+            <div class="seat">
+              <div class="label"><span>DEALER</span><span class="score" id="dealer-score">–</span></div>
+              <div class="hand" id="dealer-hand"></div>
+            </div>
+
+            <div class="motto"><i></i><span>DEALER STANDS ON ALL 17s &nbsp;♠&nbsp; BLACKJACK BEATS 21</span><i></i></div>
+
+            <div class="player-row">
+              <div class="betspot">
+                <div class="ring"><div class="pile" id="pile"></div></div>
+                <span class="amt">BET <span id="bet-amt">0</span></span>
+              </div>
+              <div class="seat">
+                <div class="hand" id="player-hand"></div>
+                <div class="label"><span>YOU</span><span class="score you" id="player-score">–</span></div>
+              </div>
+            </div>
+            <div id="banner" class="banner" role="status" aria-live="polite" hidden></div>
+          </div>
+
+          <div class="dock">
+            <div>
+              <div class="lbl" id="dock-lbl">PLACE YOUR BET</div>
+              <div class="rack">
+                <button class="chip c5" data-v="5" type="button" aria-label="Add 5 to bet"><span>5</span></button>
+                <button class="chip c25" data-v="25" type="button" aria-label="Add 25 to bet"><span>25</span></button>
+                <button class="chip c100" data-v="100" type="button" aria-label="Add 100 to bet"><span>100</span></button>
+                <button class="chip c500" data-v="500" type="button" aria-label="Add 500 to bet"><span>500</span></button>
+                <button class="ghost" id="clear-btn" type="button">Clear</button>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="act" id="hit-btn" type="button" disabled><span class="r">♥</span>HIT<kbd>H</kbd></button>
+              <button class="act" id="stand-btn" type="button" disabled><span>♠</span>STAND<kbd>S</kbd></button>
+              <button class="act outline" id="double-btn" type="button" disabled><span class="r">♦</span>DOUBLE<kbd>D</kbd></button>
+              <button class="act deal" id="deal-btn" type="button">DEAL</button>
+            </div>
+          </div>
+          <p class="status-line" id="status" role="status" aria-live="polite"></p>
         </div>
-        <div class="cards" id="player-cards"></div>
-      </section>
 
-      <div class="controls">
-        <button type="button" class="btn btn-secondary" id="hit-btn" disabled>Hit <kbd>H</kbd></button>
-        <button type="button" class="btn btn-secondary" id="stand-btn" disabled>Stand <kbd>S</kbd></button>
-        <button type="button" class="btn btn-primary" id="deal-btn">Deal <kbd>D</kbd></button>
-      </div>
-    </main>
-
-    <footer class="site-footer">
-      <p id="shoe-count" class="signed-in-only"></p>
-      <button type="button" class="link-btn signed-in-only" id="reset-score-btn">Reset score</button>
-      <p class="credit">
-        Cards dealt by the <a href="https://deckofcardsapi.com" target="_blank" rel="noopener">Deck of Cards API</a>.
-        Built for ISM 4421. Go Owls!
-      </p>
-    </footer>
+        <aside class="col-side">
+          <div class="bankcard">
+            <span class="suit" aria-hidden="true">♥</span>
+            <div class="k">BANKROLL</div>
+            <div class="v" id="bank-big">1,000</div>
+            <div class="s" id="in-play">Tap a chip to bet</div>
+            <button class="ghost light" id="refill-btn" type="button" hidden>Reset to 1,000 chips</button>
+          </div>
+          <div class="panel">
+            <h2>Scoreboard</h2>
+            <div class="scoreboard">
+              <div><span class="n" id="player-wins">0</span><span class="t">YOU</span></div>
+              <div><span class="n" id="pushes">0</span><span class="t">PUSHES</span></div>
+              <div><span class="n dealer" id="dealer-wins">0</span><span class="t">DEALER</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h2>Recent hands</h2>
+            <ul class="hist" id="hist"><li class="empty">No hands yet. Place a bet and deal.</li></ul>
+          </div>
+          <div class="panel house">
+            <h2>House rules</h2>
+            Dealer stands on all 17s. Blackjack beats 21 and pays 3:2. Double down on your first two cards.
+          </div>
+        </aside>
+      </main>
+    </section>
   </body>
 </html>
