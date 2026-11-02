@@ -5,7 +5,7 @@ A Blackjack game in Florida Atlantic University colors. Cards come from the free
 
 ## Features
 
-- Landing page with email + password sign-in (Supabase Auth)
+- Landing page with Continue with Google or email + password sign-in (Supabase Auth)
 - Bet with 5 / 25 / 100 / 500 chips from a 1,000-chip bankroll
 - **Hit**, **Stand**, **Double down** and **Deal** (keys: `H`, `S`, `D`, `Enter`)
 - Blackjack pays 3:2; dealer stands on all 17s
@@ -65,6 +65,23 @@ confirmation email. Turn confirmation off:
 To keep email confirmation instead, set up custom SMTP (Authentication →
 Emails → SMTP Settings) and set **Site URL** to your Netlify address under
 Authentication → URL Configuration.
+
+### Continue with Google
+
+The sign-in card has a **Continue with Google** button. After sign-in, the header
+shows the player's name and profile picture from Supabase `user_metadata`
+(`full_name` / `avatar_url`). Email players see their email name and initial.
+
+Setup (dashboard only, no code):
+
+1. Google Cloud Console → OAuth client (Web application) with the authorized
+   redirect URI `https://aiitajwhzjcjlckgazhq.supabase.co/auth/v1/callback`.
+2. Supabase → Authentication → Sign In / Providers → **Google**: turn it on and
+   paste the Client ID and Client Secret.
+3. Supabase → Authentication → URL Configuration: set **Site URL** to
+   `https://fauowlsblackjack.netlify.app` (and add it under Redirect URLs).
+
+If Google isn't turned on yet, the button says so instead of leaving the site.
 
 ### "Can't reach the login server"
 

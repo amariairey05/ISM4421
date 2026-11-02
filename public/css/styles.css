@@ -201,7 +201,15 @@ body:not([data-auth="signed-in"]) #game {
 .credit { padding: 0 0 32px; font-size: 13px; color: var(--muted); position: relative; }
 
 .bar-right { display: flex; align-items: center; gap: 12px; }
-.avatar { display: grid; place-items: center; font-family: var(--display); }
+.avatar { display: grid; place-items: center; font-family: var(--display); overflow: hidden; flex: none; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.player { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.player-name { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; font-size: 14px; color: var(--text); }
+
+.btn-google { height: 52px; display: flex; align-items: center; justify-content: center; gap: 12px; border: 1.5px solid #C9CED6; border-radius: 14px; background: #fff; color: #1F1F1F; font: 600 16px var(--body); box-shadow: 0 3px 0 #C9CED6; }
+.btn-google:hover:not(:disabled) { background: #F4F6F8; }
+.or { display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #6B7686; }
+.or::before, .or::after { content: ""; flex: 1; height: 1px; background: #D5DAE1; }
 .act .r { color: var(--red); }
 .act.outline .r { color: var(--red-soft); }
 .ghost { white-space: nowrap; }
@@ -226,7 +234,9 @@ body:not([data-auth="signed-in"]) #game {
 
 @media (max-width: 720px) {
   .bar-right { gap: 8px; }
-  .bar-right .avatar { display: none; }
+  .bar-right .avatar { width: 34px; height: 34px; font-size: 14px; }
+  .player-name { display: none; }
+  header.bar .brand > span { display: none; }
   header.bar .wrap { gap: 8px; }
   header.bar .brand { gap: 8px; }
   .bar-right .ghost { padding: 0 10px; }
